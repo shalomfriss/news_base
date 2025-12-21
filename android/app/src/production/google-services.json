@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "601130087328",
+    "project_id": "ganda-prod",
+    "storage_bucket": "ganda-prod.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601130087328:android:6fcc3bf7e88574aebd2ac5",
+        "android_client_info": {
+          "package_name": "com.shalomfriss.ganda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "601130087328-3pfju2qr9hjhuj6k20br5uetjvhg5hs4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7xXpmk0RLLl9FDP5CuLjyf64qdd0N4l0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "601130087328-3pfju2qr9hjhuj6k20br5uetjvhg5hs4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "601130087328-5dig8mf1pqt4mv0e14hb014leijunio3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.shalomfriss.ganda"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
