@@ -32,9 +32,8 @@ dependencies:
     path: packages/authentication_client/firebase_authentication_client
   firebase_core: ^3.4.1
   firebase_crashlytics: ^4.1.1
-  firebase_deep_link_client:
-    path: packages/deep_link_client/firebase_deep_link_client
-  firebase_dynamic_links: ^6.0.6
+  app_links_deep_link_client:
+    path: packages/deep_link_client/app_links_deep_link_client
   firebase_messaging: ^15.1.1
   firebase_notifications_client:
     path: packages/notifications_client/firebase_notifications_client
@@ -105,6 +104,28 @@ dev_dependencies:
 dependency_overrides:
   intl: ^0.19.0
   win32: ^5.5.4
+  webview_flutter_android: ^4.0.0
+  google_sign_in: ^7.0.0
+  google_sign_in_android: ^7.0.0
+  google_sign_in_ios: ^6.0.0
+  google_sign_in_platform_interface: ^3.0.0
+  in_app_purchase_android: ^0.4.0
+  path_provider_android: ^2.2.20
+  permission_handler_android: ^13.0.0
+  shared_preferences_android: ^2.4.0
+  sqflite: ^2.4.0
+  url_launcher_android: ^6.3.0
+  sign_in_with_apple: ^7.0.0
+  video_player_android: ^2.9.0
+  # Use latest Firebase packages now that Dynamic Links is removed
+  firebase_core: ^4.0.0
+  firebase_core_platform_interface: ^6.0.0
+  firebase_core_web: ^3.0.0
+  firebase_auth: ^6.0.0
+  firebase_auth_platform_interface: ^8.0.0
+  firebase_analytics: ^12.0.0
+  firebase_crashlytics: ^5.0.0
+  firebase_messaging: ^16.0.0
 
 flutter:
   generate: true

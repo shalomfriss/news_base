@@ -2,7 +2,7 @@ import 'package:ads_consent_client/ads_consent_client.dart';
 import 'package:article_repository/article_repository.dart';
 import 'package:deep_link_client/deep_link_client.dart';
 import 'package:firebase_authentication_client/firebase_authentication_client.dart';
-import 'package:firebase_deep_link_client/firebase_deep_link_client.dart';
+import 'package:app_links_deep_link_client/app_links_deep_link_client.dart';
 import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:propaganda/app/app.dart';
 import 'package:propaganda/main/bootstrap/bootstrap.dart';
@@ -21,7 +21,6 @@ import 'package:user_repository/user_repository.dart';
 void main() {
   bootstrap(
     (
-      firebaseDynamicLinks,
       firebaseMessaging,
       sharedPreferences,
       analyticsRepository,
@@ -45,9 +44,7 @@ void main() {
       );
 
       final deepLinkService = DeepLinkService(
-        deepLinkClient: FirebaseDeepLinkClient(
-          firebaseDynamicLinks: firebaseDynamicLinks,
-        ),
+        deepLinkClient: AppLinksDeepLinkClient(),
       );
 
       final userStorage = UserStorage(storage: persistentStorage);

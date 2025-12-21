@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.shalomfriss.ganda">
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
          In most cases you can leave this as-is, but you if you want to provide
@@ -14,6 +14,13 @@
         android:name="${applicationName}"
         android:label="${appName}"
         android:icon="@mipmap/ic_launcher">
+        
+        <!-- Resolve AD_SERVICES_CONFIG conflict -->
+        <property
+            android:name="android.adservices.AD_SERVICES_CONFIG"
+            android:resource="@xml/gma_ad_services_config"
+            tools:replace="android:resource" />
+        
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"

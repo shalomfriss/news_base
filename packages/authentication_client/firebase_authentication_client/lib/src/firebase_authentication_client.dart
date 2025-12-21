@@ -28,7 +28,7 @@ class FirebaseAuthenticationClient implements AuthenticationClient {
     TwitterLogin? twitterLogin,
   })  : _tokenStorage = tokenStorage,
         _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
-        _googleSignIn = googleSignIn ?? GoogleSignIn.standard(),
+        _googleSignIn = googleSignIn ?? GoogleSignIn.instance,
         _getAppleCredentials =
             getAppleCredentials ?? SignInWithApple.getAppleIDCredential,
         _facebookAuth = facebookAuth ?? FacebookAuth.instance,
@@ -91,21 +91,20 @@ class FirebaseAuthenticationClient implements AuthenticationClient {
   @override
   Future<void> logInWithGoogle() async {
     try {
-      final googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        throw LogInWithGoogleCanceled(
-          Exception('Sign in with Google canceled'),
-        );
-      }
-      final googleAuth = await googleUser.authentication;
+      final googleUser = await _googleSignIn.authenticate();
+      final googleAuth = googleUser.authentication;
+      final googleAuthClient = googleUser.authorizationClient;
+      final googleAuthorization = await googleAuthClient.authorizeScopes([]);
       final credential = firebase_auth.GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
+        accessToken: googleAuthorization.accessToken,
         idToken: googleAuth.idToken,
       );
       await _firebaseAuth.signInWithCredential(credential);
-    } on LogInWithGoogleCanceled {
-      rethrow;
     } catch (error, stackTrace) {
+      if (error.toString().contains('canceled') || 
+          error.toString().contains('cancelled')) {
+        throw LogInWithGoogleCanceled(error);
+      }
       Error.throwWithStackTrace(LogInWithGoogleFailure(error), stackTrace);
     }
   }

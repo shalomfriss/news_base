@@ -29,7 +29,8 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 34
+    namespace = "com.shalomfriss.ganda"
+    compileSdk 36
 
     compileOptions {
       sourceCompatibility JavaVersion.VERSION_17
@@ -44,7 +45,7 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    lintOptions {
+    lint {
         disable 'InvalidPackage'
         checkReleaseBuilds false
     }
@@ -52,7 +53,7 @@ android {
     defaultConfig {
         applicationId "com.shalomfriss.ganda"
         minSdkVersion 24
-        targetSdkVersion 31
+        targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
