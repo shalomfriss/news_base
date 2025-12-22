@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.shalomfriss.ganda",
+      "sha256_cert_fingerprints": [
+        "25:0C:79:1F:0B:28:84:92:86:8C:D1:21:68:06:3B:C6:10:0D:EE:F7:E7:58:D4:D5:27:65:54:23:20:3C:EA:9E"
+      ]
+    }
+  }
+]

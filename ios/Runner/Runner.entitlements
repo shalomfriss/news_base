@@ -10,7 +10,7 @@
 	</array>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:$(FLAVOR_DEEP_LINK_DOMAIN)</string>
+		<string>applinks:ganda-prod.firebaseapp.com</string>
 	</array>
 </dict>
 </plist>

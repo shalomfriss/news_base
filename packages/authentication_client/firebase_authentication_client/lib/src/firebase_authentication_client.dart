@@ -201,11 +201,18 @@ class FirebaseAuthenticationClient implements AuthenticationClient {
     required String appPackageName,
   }) async {
     try {
+      // final redirectUrl = Uri.https(
+      //   const String.fromEnvironment('FLAVOR_DEEP_LINK_DOMAIN'),
+      //   const String.fromEnvironment('FLAVOR_DEEP_dLINK_PATH'),
+      //   <String, String>{'email': email},
+      // );
+
       final redirectUrl = Uri.https(
-        const String.fromEnvironment('FLAVOR_DEEP_LINK_DOMAIN'),
-        const String.fromEnvironment('FLAVOR_DEEP_LINK_PATH'),
+        'ganda-prod.firebaseapp.com',
+        '/email_login',
         <String, String>{'email': email},
       );
+
 
       final actionCodeSettings = firebase_auth.ActionCodeSettings(
         url: redirectUrl.toString(),

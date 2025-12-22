@@ -44,14 +44,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter> 
 
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <!-- Registered callback URL for deep linking -->
                 <data
-                    android:host="@string/flavor_deep_link_domain"
+                    android:host="ganda-prod.firebaseapp.com"
                     android:scheme="https"/>
             </intent-filter>
 

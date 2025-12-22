@@ -684,14 +684,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = 42QKVF5N7J;
+				DEVELOPMENT_TEAM = 8NN27Z7TQR;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64";
 				FACEBOOK_APP_ID = "";
 				FACEBOOK_CLIENT_TOKEN = "";
 				FACEBOOK_DISPLAY_NAME = "";
 				FLAVOR_APP_NAME = "Propaganda []";
-				FLAVOR_DEEP_LINK_DOMAIN = "";
+				FLAVOR_DEEP_LINK_DOMAIN = "ganda-prod.firebaseapp.com";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -705,7 +705,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shalomfriss.ganda.;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shalomfriss.ganda;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REVERSED_CLIENT_ID = "<PASTE-REVERSED-CLIENT-ID-HERE>";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -725,14 +725,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = 42QKVF5N7J;
+				DEVELOPMENT_TEAM = 8NN27Z7TQR;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64";
 				FACEBOOK_APP_ID = "";
 				FACEBOOK_CLIENT_TOKEN = "";
 				FACEBOOK_DISPLAY_NAME = "";
 				FLAVOR_APP_NAME = "Propaganda [DEV]";
-				FLAVOR_DEEP_LINK_DOMAIN = "";
+				FLAVOR_DEEP_LINK_DOMAIN = "ganda-prod.firebaseapp.com";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -766,14 +766,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = 42QKVF5N7J;
+				DEVELOPMENT_TEAM = 8NN27Z7TQR;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64";
 				FACEBOOK_APP_ID = "";
 				FACEBOOK_CLIENT_TOKEN = "";
 				FACEBOOK_DISPLAY_NAME = "";
 				FLAVOR_APP_NAME = "Propaganda []";
-				FLAVOR_DEEP_LINK_DOMAIN = "";
+				FLAVOR_DEEP_LINK_DOMAIN = "ganda-prod.firebaseapp.com";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -787,7 +787,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.shalomfriss.ganda.;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shalomfriss.ganda;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REVERSED_CLIENT_ID = "<PASTE-REVERSED-CLIENT-ID-HERE>";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -805,14 +805,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
-				DEVELOPMENT_TEAM = 42QKVF5N7J;
+				DEVELOPMENT_TEAM = 8NN27Z7TQR;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "i386 arm64";
 				FACEBOOK_APP_ID = "";
 				FACEBOOK_CLIENT_TOKEN = "";
 				FACEBOOK_DISPLAY_NAME = "";
 				FLAVOR_APP_NAME = "Propaganda [DEV]";
-				FLAVOR_DEEP_LINK_DOMAIN = "";
+				FLAVOR_DEEP_LINK_DOMAIN = "ganda-prod.firebaseapp.com";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
@@ -847,7 +847,7 @@
 				DBE3LOCAXKG41NXPJNZX0LP0 /* Release-production */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = "Debug-";
+			defaultConfigurationName = "Debug-development";
 		};
 		97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */ = {
 			isa = XCConfigurationList;

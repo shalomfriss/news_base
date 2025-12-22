@@ -42,7 +42,21 @@ class LoginWithEmailLinkBloc
       }
 
       final emailLink = event.emailLink;
-      if (!emailLink.queryParameters.containsKey('continueUrl')) {
+      
+      // Parse the nested URL structure from Firebase Auth
+      // URL structure: /__/auth/links?link=<encoded_auth_action_url>
+      // Where auth_action_url contains: continueUrl=<your_redirect_url>
+      Uri? authActionUrl;
+      
+      if (emailLink.queryParameters.containsKey('link')) {
+        // Extract the inner link from /__/auth/links?link=...
+        authActionUrl = Uri.tryParse(emailLink.queryParameters['link']!);
+      } else {
+        authActionUrl = emailLink;
+      }
+      
+      if (authActionUrl == null || 
+          !authActionUrl.queryParameters.containsKey('continueUrl')) {
         throw LogInWithEmailLinkFailure(
           Exception(
             'No `continueUrl` parameter found in the received email link',
@@ -51,7 +65,7 @@ class LoginWithEmailLinkBloc
       }
 
       final redirectUrl =
-          Uri.tryParse(emailLink.queryParameters['continueUrl']!);
+          Uri.tryParse(authActionUrl.queryParameters['continueUrl']!);
 
       if (!(redirectUrl?.queryParameters.containsKey('email') ?? false)) {
         throw LogInWithEmailLinkFailure(
