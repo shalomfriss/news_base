@@ -36,6 +36,7 @@
 				<string>fb$(FACEBOOK_APP_ID)</string>
 				<string>$(REVERSED_CLIENT_ID)</string>
 				<string>$(TWITTER_REDIRECT_URI_SCHEME)</string>
+				<string>601130087328-5dig8mf1pqt4mv0e14hb014leijunio3.apps.googleusercontent.com</string>
 			</array>
 		</dict>
 		<dict>
@@ -108,5 +109,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>GIDClientID</key>
+    <string>601130087328-5dig8mf1pqt4mv0e14hb014leijunio3.apps.googleusercontent.com</string>
 </dict>
 </plist>
