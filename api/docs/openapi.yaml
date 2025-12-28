@@ -1,0 +1,1189 @@
+openapi: 3.0.3
+info:
+  title: Propaganda API
+  description: A news platform API with articles, subscriptions, and user management
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+
+tags:
+  - name: Health
+    description: Server health endpoints
+  - name: Articles
+    description: News article endpoints
+  - name: Feed
+    description: News feed endpoints
+  - name: Categories
+    description: News category endpoints
+  - name: Subscriptions
+    description: Subscription management
+  - name: Users
+    description: User management
+  - name: Search
+    description: Search functionality
+  - name: Newsletter
+    description: Newsletter subscriptions
+
+paths:
+  /:
+    get:
+      summary: Health check
+      description: Verifies the server is healthy. Returns 204 if healthy.
+      tags:
+        - Health
+      responses:
+        '204':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: healthy
+
+  /api/v1/feed:
+    get:
+      summary: Get news feed
+      description: Retrieves a paginated news feed. Can filter by category.
+      tags:
+        - Feed
+      parameters:
+        - name: category
+          in: query
+          description: Filter feed by category
+          schema:
+            type: string
+            enum: [business, entertainment, general, health, science, sports, technology]
+            default: general
+        - name: limit
+          in: query
+          description: Number of blocks to return
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Zero-based offset for pagination
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Successful feed response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedResponse'
+        '400':
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/articles/{id}:
+    get:
+      summary: Get article by ID
+      description: Retrieves article content. Supports pagination. Premium content requires subscription.
+      tags:
+        - Articles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Article identifier
+          schema:
+            type: string
+            example: "499305f6-5096-4051-afda-824dcfc7df23"
+        - name: limit
+          in: query
+          description: Number of blocks to return
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Zero-based offset for pagination
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+        - name: preview
+          in: query
+          description: Return preview content only
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Successful article response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleResponse'
+        '401':
+          description: Authentication required for premium content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/articles/{id}/related:
+    get:
+      summary: Get related articles
+      description: Retrieves articles related to the specified article.
+      tags:
+        - Articles
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Article identifier
+          schema:
+            type: string
+            example: "499305f6-5096-4051-afda-824dcfc7df23"
+        - name: limit
+          in: query
+          description: Number of blocks to return
+          schema:
+            type: integer
+            default: 20
+            minimum: 1
+            maximum: 100
+        - name: offset
+          in: query
+          description: Zero-based offset for pagination
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+      responses:
+        '200':
+          description: Successful related articles response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelatedArticlesResponse'
+        '404':
+          description: Article not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/categories:
+    get:
+      summary: Get all categories
+      description: Retrieves a list of all available news categories.
+      tags:
+        - Categories
+      responses:
+        '200':
+          description: Successful categories response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriesResponse'
+
+  /api/v1/subscriptions:
+    get:
+      summary: Get available subscriptions
+      description: Retrieves all available subscription plans with pricing and benefits.
+      tags:
+        - Subscriptions
+      responses:
+        '200':
+          description: Successful subscriptions response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionsResponse'
+    post:
+      summary: Create subscription
+      description: Creates a subscription for the authenticated user.
+      tags:
+        - Subscriptions
+      parameters:
+        - name: subscriptionId
+          in: query
+          required: true
+          description: Subscription plan ID to subscribe to
+          schema:
+            type: string
+            example: "dd339fda-33e9-49d0-9eb5-0ccb77eb760f"
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Subscription created successfully
+        '400':
+          description: Missing subscriptionId or unauthenticated user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Subscription plan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/users/me:
+    get:
+      summary: Get current user
+      description: Retrieves information about the currently authenticated user.
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful user response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUserResponse'
+        '400':
+          description: Unauthenticated request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/search/popular:
+    get:
+      summary: Get popular search topics
+      description: Retrieves popular search topics and trending articles.
+      tags:
+        - Search
+      responses:
+        '200':
+          description: Successful popular search response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PopularSearchResponse'
+
+  /api/v1/search/relevant:
+    get:
+      summary: Search relevant content
+      description: Searches for relevant news content based on query.
+      tags:
+        - Search
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search query string
+          schema:
+            type: string
+            example: "technology"
+      responses:
+        '200':
+          description: Successful relevant search response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelevantSearchResponse'
+        '400':
+          description: Missing query parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/newsletter/subscription:
+    post:
+      summary: Subscribe to newsletter
+      description: Subscribes a user to the newsletter.
+      tags:
+        - Newsletter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsletterSubscriptionRequest'
+      responses:
+        '201':
+          description: Newsletter subscription created
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    # ============ Response Schemas ============
+
+    FeedResponse:
+      type: object
+      properties:
+        feed:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsBlock'
+          description: List of feed blocks
+        totalCount:
+          type: integer
+          description: Total number of blocks in feed
+      example:
+        feed:
+          - type: "__section_header__"
+            title: "Breaking News"
+          - type: "__post_large__"
+            id: "499305f6-5096-4051-afda-824dcfc7df23"
+            category: "technology"
+            author: "Sean Hollister"
+            publishedAt: "2022-03-09T00:00:00.000"
+            imageUrl: "https://cdn.vox-cdn.com/..."
+            title: "Nvidia and AMD GPUs are returning to shelves"
+            isPremium: false
+        totalCount: 100
+
+    ArticleResponse:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Article title
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsBlock'
+          description: Article content blocks
+        totalCount:
+          type: integer
+          description: Total number of blocks in article
+        url:
+          type: string
+          format: uri
+          description: Article URL
+        isPremium:
+          type: boolean
+          description: Whether article requires premium subscription
+        isPreview:
+          type: boolean
+          description: Whether content is preview only
+      example:
+        title: "Breaking News"
+        content:
+          - type: "__article_introduction__"
+            category: "technology"
+            author: "John Doe"
+            publishedAt: "2022-03-17T00:00:00.000"
+            imageUrl: "https://example.com/image.jpg"
+            title: "Breaking News"
+        totalCount: 42
+        url: "https://dailyglobe.com/article"
+        isPremium: false
+        isPreview: false
+
+    RelatedArticlesResponse:
+      type: object
+      properties:
+        related_articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsBlock'
+          description: List of related article blocks
+        total_count:
+          type: integer
+          description: Total number of related articles
+      example:
+        related_articles:
+          - id: "b1fc2ffc-eb02-42ce-af65-79702172a987"
+            category: "health"
+            author: "Northwestern University"
+            publishedAt: "2022-03-11T00:00:00.000"
+            imageUrl: "https://scitechdaily.com/images/..."
+            title: "Restoring Hearing"
+            description: "New discovery allows production of ear hair cells..."
+            isPremium: false
+            type: "__post_small__"
+        total_count: 10
+
+    CategoriesResponse:
+      type: object
+      properties:
+        categories:
+          type: array
+          items:
+            type: string
+            enum: [business, entertainment, general, health, science, sports, technology]
+          description: List of available categories
+      example:
+        categories: ["technology", "sports", "top", "business", "entertainment", "health", "science"]
+
+    SubscriptionsResponse:
+      type: object
+      properties:
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+          description: List of available subscription plans
+      example:
+        subscriptions:
+          - id: "dd339fda-33e9-49d0-9eb5-0ccb77eb760f"
+            name: "premium"
+            cost:
+              monthly: 1499
+              annual: 16200
+            benefits:
+              - "No ads"
+              - "Access to premium content"
+              - "Unlimited reads"
+
+    CurrentUserResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+      example:
+        user:
+          id: "2e99887d-d672-4b96-ad6a-123c1c7fa3fa"
+          subscription: "premium"
+
+    PopularSearchResponse:
+      type: object
+      properties:
+        topics:
+          type: array
+          items:
+            type: string
+          description: List of popular search topics
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsBlock'
+          description: List of popular article blocks
+      example:
+        topics: ["Ukraine", "Supreme Court", "China", "Inflation", "Oil Prices", "Plane Crash"]
+        articles:
+          - id: "b1fc2ffc-eb02-42ce-af65-79702172a987"
+            category: "health"
+            author: "Northwestern University"
+            publishedAt: "2022-03-11T00:00:00.000"
+            imageUrl: "https://scitechdaily.com/images/..."
+            title: "Restoring Hearing"
+            description: "New discovery allows production of ear hair cells..."
+            isPremium: false
+            type: "__post_small__"
+
+    RelevantSearchResponse:
+      type: object
+      properties:
+        topics:
+          type: array
+          items:
+            type: string
+          description: List of relevant search topics
+        articles:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsBlock'
+          description: List of relevant article blocks
+      example:
+        topics: ["South China Sea", "US-China Relations", "China at the Olympics"]
+        articles:
+          - id: "b1fc2ffc-eb02-42ce-af65-79702172a987"
+            category: "health"
+            author: "Northwestern University"
+            publishedAt: "2022-03-11T00:00:00.000"
+            imageUrl: "https://scitechdaily.com/images/..."
+            title: "Restoring Hearing"
+            description: "New discovery allows production of ear hair cells..."
+            isPremium: false
+            type: "__post_small__"
+
+    # ============ Data Schemas ============
+
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique subscription identifier
+        name:
+          type: string
+          enum: [none, basic, plus, premium]
+          description: Subscription plan name
+        cost:
+          $ref: '#/components/schemas/SubscriptionCost'
+        benefits:
+          type: array
+          items:
+            type: string
+          description: List of benefits
+      required:
+        - id
+        - name
+        - cost
+        - benefits
+
+    SubscriptionCost:
+      type: object
+      properties:
+        monthly:
+          type: integer
+          description: Monthly cost in cents
+        annual:
+          type: integer
+          description: Annual cost in cents
+      required:
+        - monthly
+        - annual
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique user identifier
+        subscription:
+          type: string
+          enum: [none, basic, plus, premium]
+          description: User's subscription plan
+      required:
+        - id
+        - subscription
+
+    NewsletterSubscriptionRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          description: Email address to subscribe
+      example:
+        email: "user@example.com"
+
+    # ============ Block Schemas ============
+
+    NewsBlock:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/SectionHeaderBlock'
+        - $ref: '#/components/schemas/DividerHorizontalBlock'
+        - $ref: '#/components/schemas/SpacerBlock'
+        - $ref: '#/components/schemas/PostLargeBlock'
+        - $ref: '#/components/schemas/PostMediumBlock'
+        - $ref: '#/components/schemas/PostSmallBlock'
+        - $ref: '#/components/schemas/PostGridGroupBlock'
+        - $ref: '#/components/schemas/PostGridTileBlock'
+        - $ref: '#/components/schemas/TextCaptionBlock'
+        - $ref: '#/components/schemas/TextHeadlineBlock'
+        - $ref: '#/components/schemas/TextLeadParagraphBlock'
+        - $ref: '#/components/schemas/TextParagraphBlock'
+        - $ref: '#/components/schemas/ImageBlock'
+        - $ref: '#/components/schemas/VideoBlock'
+        - $ref: '#/components/schemas/BannerAdBlock'
+        - $ref: '#/components/schemas/NewsletterBlock'
+        - $ref: '#/components/schemas/ArticleIntroductionBlock'
+        - $ref: '#/components/schemas/TrendingStoryBlock'
+        - $ref: '#/components/schemas/SlideshowBlock'
+        - $ref: '#/components/schemas/HtmlBlock'
+        - $ref: '#/components/schemas/UnknownBlock'
+      discriminator:
+        propertyName: type
+
+    SectionHeaderBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__section_header__"]
+        title:
+          type: string
+          description: Section title
+      required:
+        - type
+        - title
+      example:
+        type: "__section_header__"
+        title: "Breaking News"
+
+    DividerHorizontalBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__divider_horizontal__"]
+      required:
+        - type
+      example:
+        type: "__divider_horizontal__"
+
+    SpacerBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__spacer__"]
+        spacing:
+          type: string
+          enum: ["extraSmall", "small", "medium", "large", "extraLarge"]
+          default: "medium"
+      required:
+        - type
+      example:
+        type: "__spacer__"
+        spacing: "medium"
+
+    PostLargeBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__post_large__"]
+        id:
+          type: string
+          description: Article identifier
+        category:
+          type: string
+          enum: [business, entertainment, general, health, science, sports, technology]
+        author:
+          type: string
+        publishedAt:
+          type: string
+          format: date-time
+        imageUrl:
+          type: string
+          format: uri
+        title:
+          type: string
+        description:
+          type: string
+        isPremium:
+          type: boolean
+          default: false
+        action:
+          $ref: '#/components/schemas/BlockAction'
+      required:
+        - type
+        - id
+        - category
+        - author
+        - publishedAt
+        - title
+      example:
+        type: "__post_large__"
+        id: "499305f6-5096-4051-afda-824dcfc7df23"
+        category: "technology"
+        author: "Sean Hollister"
+        publishedAt: "2022-03-09T00:00:00.000"
+        imageUrl: "https://cdn.vox-cdn.com/thumbor/..."
+        title: "Nvidia and AMD GPUs are returning to shelves"
+        isPremium: false
+        action:
+          article_id: "499305f6-5096-4051-afda-824dcfc7df23"
+          type: "__navigate_to_article__"
+
+    PostMediumBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__post_medium__"]
+        id:
+          type: string
+        category:
+          type: string
+        author:
+          type: string
+        publishedAt:
+          type: string
+          format: date-time
+        imageUrl:
+          type: string
+          format: uri
+        title:
+          type: string
+        description:
+          type: string
+        isPremium:
+          type: boolean
+        action:
+          $ref: '#/components/schemas/BlockAction'
+      required:
+        - type
+        - id
+        - category
+        - author
+        - publishedAt
+        - title
+      example:
+        type: "__post_medium__"
+        id: "82c49bf1-946d-4920-a801-302291f367b5"
+        category: "sports"
+        author: "Tom Dierberger"
+        publishedAt: "2022-03-10T00:00:00.000"
+        imageUrl: "https://www.nbcsports.com/sites/..."
+        title: "Patrick Beverley throws shade at Warriors"
+        description: "Patrick Beverley has a lot to say..."
+        isPremium: false
+        action:
+          article_id: "82c49bf1-946d-4920-a801-302291f367b5"
+          type: "__navigate_to_article__"
+
+    PostSmallBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__post_small__"]
+        id:
+          type: string
+        category:
+          type: string
+        author:
+          type: string
+        publishedAt:
+          type: string
+          format: date-time
+        imageUrl:
+          type: string
+          format: uri
+        title:
+          type: string
+        description:
+          type: string
+        isPremium:
+          type: boolean
+        action:
+          $ref: '#/components/schemas/BlockAction'
+      required:
+        - type
+        - id
+        - category
+        - author
+        - publishedAt
+        - title
+      example:
+        type: "__post_small__"
+        id: "b1fc2ffc-eb02-42ce-af65-79702172a987"
+        category: "health"
+        author: "Northwestern University"
+        publishedAt: "2022-03-11T00:00:00.000"
+        imageUrl: "https://scitechdaily.com/images/..."
+        title: "Restoring Hearing"
+        description: "New discovery allows production of ear hair cells..."
+        isPremium: false
+        action:
+          article_id: "b1fc2ffc-eb02-42ce-af65-79702172a987"
+          type: "__navigate_to_article__"
+
+    PostGridGroupBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__post_grid_group__"]
+        category:
+          type: string
+        tiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostGridTileBlock'
+      required:
+        - type
+        - tiles
+      example:
+        type: "__post_grid_group__"
+        category: "science"
+        tiles:
+          - id: "384a15ff-a50e-46d5-96a7-8864facdcc48"
+            category: "science"
+            author: "Loren Grush"
+            publishedAt: "2022-05-06T00:00:00.000"
+            imageUrl: "https://cdn.vox-cdn.com/thumbor/..."
+            title: "SpaceX successfully returns four astronauts"
+            isPremium: false
+            type: "__post_grid_tile__"
+
+    PostGridTileBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__post_grid_tile__"]
+        id:
+          type: string
+        category:
+          type: string
+        author:
+          type: string
+        publishedAt:
+          type: string
+          format: date-time
+        imageUrl:
+          type: string
+          format: uri
+        title:
+          type: string
+        isPremium:
+          type: boolean
+        action:
+          $ref: '#/components/schemas/BlockAction'
+      required:
+        - type
+        - id
+        - category
+        - author
+        - publishedAt
+        - title
+      example:
+        type: "__post_grid_tile__"
+        id: "384a15ff-a50e-46d5-96a7-8864facdcc48"
+        category: "science"
+        author: "Loren Grush"
+        publishedAt: "2022-05-06T00:00:00.000"
+        imageUrl: "https://cdn.vox-cdn.com/thumbor/..."
+        title: "SpaceX successfully returns four astronauts"
+        isPremium: false
+        action:
+          article_id: "384a15ff-a50e-46d5-96a7-8864facdcc48"
+          type: "__navigate_to_article__"
+
+    TextCaptionBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__text_caption__"]
+        content:
+          type: string
+      required:
+        - type
+        - content
+      example:
+        type: "__text_caption__"
+        content: "Image caption here"
+
+    TextHeadlineBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__text_headline__"]
+        content:
+          type: string
+      required:
+        - type
+        - content
+      example:
+        type: "__text_headline__"
+        content: "Headline text"
+
+    TextLeadParagraphBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__text_lead_paragraph__"]
+        content:
+          type: string
+      required:
+        - type
+        - content
+      example:
+        type: "__text_lead_paragraph__"
+        content: "This is the lead paragraph of the article..."
+
+    TextParagraphBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__text_paragraph__"]
+        content:
+          type: string
+      required:
+        - type
+        - content
+      example:
+        type: "__text_paragraph__"
+        content: "This is a paragraph of article content..."
+
+    ImageBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__image__"]
+        url:
+          type: string
+          format: uri
+        caption:
+          type: string
+      required:
+        - type
+        - url
+      example:
+        type: "__image__"
+        url: "https://example.com/image.jpg"
+        caption: "Image caption"
+
+    VideoBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__video__"]
+        url:
+          type: string
+          format: uri
+        thumbnailUrl:
+          type: string
+          format: uri
+        duration:
+          type: integer
+          description: Duration in seconds
+      required:
+        - type
+        - url
+      example:
+        type: "__video__"
+        url: "https://example.com/video.mp4"
+        thumbnailUrl: "https://example.com/thumb.jpg"
+        duration: 120
+
+    BannerAdBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__banner_ad__"]
+        size:
+          type: string
+          enum: [normal, large, extraLarge, anchoredAdaptive]
+          default: normal
+      required:
+        - type
+      example:
+        type: "__banner_ad__"
+        size: "normal"
+
+    NewsletterBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__newsletter__"]
+        text:
+          type: string
+        action:
+          $ref: '#/components/schemas/BlockAction'
+      required:
+        - type
+      example:
+        type: "__newsletter__"
+        text: "Subscribe to our newsletter"
+        action:
+          type: "navigate_to_newsletter"
+          url: "https://example.com/newsletter"
+
+    ArticleIntroductionBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__article_introduction__"]
+        category:
+          type: string
+        author:
+          type: string
+        publishedAt:
+          type: string
+          format: date-time
+        imageUrl:
+          type: string
+          format: uri
+        title:
+          type: string
+      required:
+        - type
+        - category
+        - author
+        - publishedAt
+        - title
+      example:
+        type: "__article_introduction__"
+        category: "technology"
+        author: "John Doe"
+        publishedAt: "2022-03-17T00:00:00.000"
+        imageUrl: "https://example.com/image.jpg"
+        title: "Article Title"
+
+    TrendingStoryBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__trending_story__"]
+        title:
+          type: string
+        action:
+          $ref: '#/components/schemas/BlockAction'
+      required:
+        - type
+        - title
+      example:
+        type: "__trending_story__"
+        title: "Trending Story"
+        action:
+          article_id: "article-id"
+          type: "__navigate_to_article__"
+
+    SlideshowBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__slideshow__"]
+        slides:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlideBlock'
+      required:
+        - type
+        - slides
+      example:
+        type: "__slideshow__"
+        slides:
+          - type: "__slide__"
+            url: "https://example.com/slide1.jpg"
+            caption: "Slide 1"
+
+    SlideBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__slide__"]
+        url:
+          type: string
+          format: uri
+        caption:
+          type: string
+      required:
+        - type
+        - url
+      example:
+        type: "__slide__"
+        url: "https://example.com/slide1.jpg"
+        caption: "Slide caption"
+
+    HtmlBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__html__"]
+        html:
+          type: string
+      required:
+        - type
+        - html
+      example:
+        type: "__html__"
+        html: "<p>HTML content</p>"
+
+    UnknownBlock:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__unknown__"]
+      required:
+        - type
+      example:
+        type: "__unknown__"
+
+    BlockAction:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/NavigateToArticleAction'
+        - $ref: '#/components/schemas/NavigateToNewsletterAction'
+      discriminator:
+        propertyName: type
+
+    NavigateToArticleAction:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["__navigate_to_article__"]
+        article_id:
+          type: string
+      required:
+        - type
+        - article_id
+      example:
+        type: "__navigate_to_article__"
+        article_id: "article-id"
+
+    NavigateToNewsletterAction:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: ["navigate_to_newsletter"]
+        url:
+          type: string
+          format: uri
+      required:
+        - type
+        - url
+      example:
+        type: "navigate_to_newsletter"
+        url: "https://example.com/newsletter"
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        status:
+          type: integer
+          description: HTTP status code
+      example:
+        error: "Not found"
+        status: 404
